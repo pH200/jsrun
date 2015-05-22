@@ -17,21 +17,19 @@ JsRun.prototype.just = function just() {
   var NAME = '[run-script]';
 
   if (arguments.length < 2) {
-    var invalidArgsErr = new gutil.PluginError(
-      NAME,
-      'Invalid argument for just task'
+    var invalidArgsErr = new Error(
+      'Invalid argument for just task\n' +
+      'args: ' + JSON.stringify(arguments, null, 2)
     );
-    invalidArgsErr.args = arguments;
     throw invalidArgsErr;
   }
   var runArgs = arguments[arguments.length - 1];
   if (!Array.isArray(runArgs)) {
-    var invalidCommandTreeErr = new gutil.PluginError(
-      NAME,
-      'Invalid argument for just task'
+    var invalidCommandTreeErr = new Error(
+      'Invalid argument for just task\n' +
+      'args: ' + JSON.stringify(arguments, null, 2) +
+      '\ncommandTree: ' + JSON.stringify(runArgs, null, 2)
     );
-    invalidCommandTreeErr.args = arguments;
-    invalidCommandTreeErr.commandTree = runArgs;
     throw invalidCommandTreeErr;
   }
 

@@ -59,6 +59,18 @@ describe('gulp tasks', function() {
         done();
       });
     });
+
+    it('should throw error for empty task', function() {
+      assert.throws(function() {
+        gulp.just();
+      }, /invalid argument/i);
+    });
+
+    it('should throw error for invalid commandTree', function() {
+      assert.throws(function() {
+        gulp.just('test', 'mocha --version');
+      }, /invalid argument/i);
+    });
   });
 
   describe('justExec()', function() {
