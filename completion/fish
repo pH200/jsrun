@@ -2,9 +2,9 @@
 
 # Usage:
 #
-# To enable fish <tab> completion for justrun, add the following line to
+# To enable fish <tab> completion for jsrun, add the following line to
 # your ~/.config/fish/config.fish file:
 #
-# justrun --completion=fish | source
+# jsrun --completion=fish | source
 
-complete -c justrun -a "(justrun --tasks-simple)" -f
+complete -c jsrun -a "(jsrun --tasks-simple)" -f

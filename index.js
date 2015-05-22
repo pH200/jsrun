@@ -6,14 +6,14 @@ var Orchestrator = require('orchestrator');
 var buildCommand = require('./lib/buildCommand');
 var npmTaskRun = require('./lib/exec');
 
-function Justrun() {
+function JsRun() {
   Orchestrator.call(this);
 }
-util.inherits(Justrun, Orchestrator);
+util.inherits(JsRun, Orchestrator);
 
-Justrun.prototype.task = Justrun.prototype.add;
+JsRun.prototype.task = JsRun.prototype.add;
 
-Justrun.prototype.run = function run() {
+JsRun.prototype.run = function run() {
   if (arguments.length < 2) {
     throw new Error('Invalid argument for run-script task');
   }
@@ -41,7 +41,7 @@ Justrun.prototype.run = function run() {
   this.add.apply(this, args.slice(0, sliceLength).concat([runScript]));
 };
 
-Justrun.prototype.justExec = function justExec(args, options, callback) {
+JsRun.prototype.justExec = function justExec(args, options, callback) {
   if (!Array.isArray(args)) {
     throw new Error('Invalid arguments');
   }
@@ -78,7 +78,7 @@ Justrun.prototype.justExec = function justExec(args, options, callback) {
   });
 };
 
-Justrun.prototype.Justrun = Justrun;
+JsRun.prototype.JsRun = JsRun;
 
-var inst = new Justrun();
+var inst = new JsRun();
 module.exports = inst;

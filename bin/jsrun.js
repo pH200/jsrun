@@ -19,7 +19,7 @@ var taskTree = require('../lib/taskTree');
 process.env.INIT_CWD = process.cwd();
 
 var cli = new Liftoff({
-  name: 'justrun',
+  name: 'jsrun',
   completions: completion,
   extensions: interpret.jsVariants,
   v8flags: v8flags
@@ -66,7 +66,7 @@ cli.on('respawn', function(flags, child) {
 
 cli.launch({
   cwd: argv.cwd,
-  configPath: argv.justrunfile,
+  configPath: argv.jsrunfile,
   require: argv.require,
   completion: argv.completion,
 }, handleArguments);
@@ -83,26 +83,26 @@ function handleArguments(env) {
 
   if (!argv.skipModuleCheck && !env.modulePath) {
     gutil.log(
-      chalk.red('Local justrun not found in'),
+      chalk.red('Local jsrun not found in'),
       chalk.magenta(tildify(env.cwd))
     );
-    gutil.log(chalk.red('Try running: npm install justrun'));
+    gutil.log(chalk.red('Try running: npm install jsrun'));
     process.exit(1);
   }
 
   if (!env.configPath) {
-    gutil.log(chalk.red('No justrunfile found'));
+    gutil.log(chalk.red('No jsrunfile found'));
     process.exit(1);
   }
 
   // Check for semver difference between cli and local installation
   if (semver.gt(cliPackage.version, env.modulePackage.version)) {
-    gutil.log(chalk.red('Warning: justrun version mismatch:'));
-    gutil.log(chalk.red('Global justrun is', cliPackage.version));
-    gutil.log(chalk.red('Local justrun is', env.modulePackage.version));
+    gutil.log(chalk.red('Warning: jsrun version mismatch:'));
+    gutil.log(chalk.red('Global jsrun is', cliPackage.version));
+    gutil.log(chalk.red('Local jsrun is', env.modulePackage.version));
   }
 
-  // Chdir before requiring justrunfile to make sure
+  // Chdir before requiring jsrunfile to make sure
   // we let them chdir as needed
   if (process.cwd() !== env.cwd) {
     process.chdir(env.cwd);
@@ -112,9 +112,9 @@ function handleArguments(env) {
     );
   }
 
-  // This is what actually loads up the justrunfile
+  // This is what actually loads up the jsrunfile
   require(env.configPath);
-  gutil.log('Using justrunfile', chalk.magenta(tildify(env.configPath)));
+  gutil.log('Using jsrunfile', chalk.magenta(tildify(env.configPath)));
 
   var gulpInst = require(env.modulePath);
   logEvents(gulpInst);
@@ -204,10 +204,10 @@ function logEvents(gulpInst) {
 
   gulpInst.on('task_not_found', function(err) {
     gutil.log(
-      chalk.red('Task \'' + err.task + '\' is not in your justrunfile')
+      chalk.red('Task \'' + err.task + '\' is not in your jsrunfile')
     );
     gutil.log(
-      'Please check the documentation for proper justrunfile formatting'
+      'Please check the documentation for proper jsrunfile formatting'
     );
     process.exit(1);
   });

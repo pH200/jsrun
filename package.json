@@ -1,5 +1,5 @@
 {
-  "name": "justrun",
+  "name": "jsrun",
   "description": "The npm run-script build system",
   "version": "1.0.0",
   "homepage": "http://gulpjs.com",
@@ -21,7 +21,7 @@
     "completion"
   ],
   "bin": {
-    "justrun": "./bin/justrun.js"
+    "jsrun": "./bin/jsrun.js"
   },
   "dependencies": {
     "archy": "^1.0.0",
@@ -53,9 +53,9 @@
     "should": "^5.0.1"
   },
   "scripts": {
-    "lint": "node bin/justrun.js lint --skipModuleCheck",
-    "test": "node bin/justrun.js --skipModuleCheck",
-    "coveralls": "node bin/justrun.js cover --skipModuleCheck"
+    "lint": "node bin/jsrun.js lint --skipModuleCheck",
+    "test": "node bin/jsrun.js --skipModuleCheck",
+    "coveralls": "node bin/jsrun.js cover --skipModuleCheck"
   },
   "engines": {
     "node": ">= 0.9"

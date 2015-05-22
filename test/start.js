@@ -5,7 +5,7 @@ var Q = require('q');
 var should = require('should');
 require('mocha');
 
-describe('justrun start', function() {
+describe('jsrun start', function() {
   it('should run multiple tasks', function(done) {
     var a, fn, fn2;
     a = 0;

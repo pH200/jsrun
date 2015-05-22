@@ -9,17 +9,17 @@
 
 # Usage:
 #
-# To enable zsh <tab> completion for justrun, add the following line (minus the
+# To enable zsh <tab> completion for jsrun, add the following line (minus the
 # leading #, which is the zsh comment character) to your ~/.zshrc file:
 #
-# eval "$(justrun --completion=zsh)"
+# eval "$(jsrun --completion=zsh)"
 
 # Enable zsh autocompletion.
-function _justrun_completion() {
+function _jsrun_completion() {
   # Grab tasks
-  compls=$(justrun --tasks-simple)
+  compls=$(jsrun --tasks-simple)
   completions=(${=compls})
   compadd -- $completions
 }
 
-compdef _justrun_completion justrun
+compdef _jsrun_completion jsrun

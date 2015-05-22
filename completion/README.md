@@ -1,20 +1,20 @@
-# Completion for justrun
+# Completion for jsrun
 > Thanks to grunt team and Tyler Kellen
 
-To enable tasks auto-completion in shell you should add `eval "$(justrun --completion=shell)"` in your `.shellrc` file.
+To enable tasks auto-completion in shell you should add `eval "$(jsrun --completion=shell)"` in your `.shellrc` file.
 
 ## Bash
 
-Add `eval "$(justrun --completion=bash)"` to `~/.bashrc`.
+Add `eval "$(jsrun --completion=bash)"` to `~/.bashrc`.
 
 ## Zsh
 
-Add `eval "$(justrun --completion=zsh)"` to `~/.zshrc`.
+Add `eval "$(jsrun --completion=zsh)"` to `~/.zshrc`.
 
 ## Powershell
 
-Add `Invoke-Expression ((justrun --completion=powershell) -join [System.Environment]::NewLine)` to `$PROFILE`.
+Add `Invoke-Expression ((jsrun --completion=powershell) -join [System.Environment]::NewLine)` to `$PROFILE`.
 
 ## Fish
 
-Add `justrun --completion=fish | source` to `~/.config/fish/config.fish`.
+Add `jsrun --completion=fish | source` to `~/.config/fish/config.fish`.

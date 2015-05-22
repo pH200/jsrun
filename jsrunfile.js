@@ -1,9 +1,9 @@
 'use strict';
-var justrun = require('./');
+var jsrun = require('./');
 
-justrun.run('lint', [
+jsrun.run('lint', [
   ['jshint', [
-    'lib bin test index.js justrunfile.js',
+    'lib bin test index.js jsrunfile.js',
     ['--reporter', 'node_modules/jshint-stylish/stylish.js'],
     ['--exclude', 'node_modules']
   ]],
@@ -11,9 +11,9 @@ justrun.run('lint', [
   ['jscs', 'lib bin test index.js']
 ]);
 
-justrun.run('mocha', ['mocha --reporter spec']);
+jsrun.run('mocha', ['mocha --reporter spec']);
 
-justrun.run('cover', [
+jsrun.run('cover', [
   ['istanbul', [
     ['cover', '_mocha'],
     ['--report', 'lcovonly -- -R spec']
@@ -26,4 +26,4 @@ justrun.run('cover', [
   'rm -rf ./coverage'
 ]);
 
-justrun.task('default', ['lint', 'mocha']);
+jsrun.task('default', ['lint', 'mocha']);
