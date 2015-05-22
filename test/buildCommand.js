@@ -41,21 +41,9 @@ describe('buildCommand()', function() {
     assert.equal(buildCommand(browserify), result);
   });
 
-  it('should throw error for the invalid command name', function() {
-    assert.throws(function() {
-      buildCommand([123]);
-    }, /invalid command/i);
-  });
-
   it('should throw error for the invalid arguments', function() {
     assert.throws(function() {
       buildCommand(['browserify', 123]);
-    }, /should be an array/i);
-  });
-
-  it('should throw error for extra arguments', function() {
-    assert.throws(function() {
-      buildCommand(['browserify', ['-t'], '-o']);
-    }, /object should be/i);
+    }, /must be a string/i);
   });
 });
