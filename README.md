@@ -28,12 +28,16 @@ And one day, I just couldn't take it anymore.
 
 ## Introducing JsRun - Just run your scripts
 
-Thanks to [npm-run], JsRun runs your local bins, just like `npm run stuff`.
+Thanks to [npm-run], JsRun runs your local bins, like `npm run stuff`.
+For example, you can `npm install --save-dev jshint` and use `jshint` command
+from your local `node_modules` in JsRun.
+
+Sample `jsrunfile.js`:
 
 ```js
-// jsrunfile.js
 var jsrun = require('jsrun');
 
+// Define a new task 'lint' with the command 'jshint lib test ...'
 jsrun.just('lint', [
   'jshint', [
     'lib test index.js',
@@ -52,8 +56,7 @@ jsrun.just('build', [
   // Create as many layers of array as you want
   ['browserify', [
     'index.js',
-    '-d',
-    ['-t', 'babelify']
+    ['-d', '-t', 'babelify']
   ]],
   // You can use "|" and "&&" in JsRun
   '|',
@@ -64,8 +67,8 @@ jsrun.just('build', [
   ]
 ]);
 
-// Just like gulp.task
-// You can use callbacks, promises and of course, streams.
+// jsrun.task is gulp.task
+// You can use callbacks, promises and of course, streams
 jsrun.task('hello', function(cb) {
   console.log('Hello');
 
@@ -75,6 +78,7 @@ jsrun.task('hello', function(cb) {
   }, 500);
 });
 
+// The default task
 jsrun.task('default', ['lint', 'test', 'build']);
 ```
 
@@ -94,8 +98,8 @@ as long as they are command-line scripts.
 ### Comments and variables
 
 Sometimes, there might be something you want to comment in your build script,
-and it is impossible in the `package.json`. And we want variables for filenames
-in different scripts, again, impossible for `package.json`.
+and it is impossible in the `package.json`. And we want variables for sharing
+values in different scripts. Again, it's difficult for `package.json`.
 
 ## FAQ
 
