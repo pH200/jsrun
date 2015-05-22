@@ -6,12 +6,11 @@
   "author": "pH200 <ph.minamo@cytisan.com>",
   "tags": [
     "build",
-    "stream",
     "system",
     "make",
-    "tool",
-    "asset",
-    "pipeline"
+    "pipeline",
+    "npm",
+    "shell"
   ],
   "files": [
     "index.js",

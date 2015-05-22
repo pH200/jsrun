@@ -1,105 +1,111 @@
-<p align="center">
-  <a href="http://gulpjs.com">
-    <img height="257" width="114" src="https://raw.githubusercontent.com/gulpjs/artwork/master/gulp-2x.png">
-  </a>
-</p>
+# JsRun
 
-# gulp
-**The streaming build system**
+The npm run-script build system, compatible with [gulp].
 
-[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Support us][gittip-image]][gittip-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url] [![Gitter chat][gitter-image]][gitter-url]
+## The struggle
 
-## Like what we do?
+Does this seems familiar to you?
 
-[Support us via Gratipay](https://gratipay.com/WeAreFractal/)
+```js
+{
+  "name": "my-awesome-package",
+  ...
+  "scripts": {
+    // My very long lines run-scripts:
+    "lint": "jshint lib test index.js --reporter node_modules/jshint-stylish/stylish.js --exclude node_modules",
+    "test": "npm run lint && node test/index.js | tap-spec",
+    "build": "browserify index.js -d -t babelify | uglifyjs -m -c > bundle.min.js",
+    "cover": "istanbul cover --report html --print detail ./test/index.js",
+    "coveralls": "npm run cover && istanbul report lcov && cat coverage/lcov.info | coveralls && rm -rf ./coverage"
+  }
+}
+```
+
+Well, it happened to me. My run-scripts grew longer from time to time.
+And one day, I just couldn't take it anymore.
+
+## Introducing JsRun - Just run your scripts
+
+Thanks to [npm-run], JsRun runs your local bins, just like `npm run stuff`.
+
+```js
+// jsrunfile.js
+var jsrun = require('jsrun');
+
+jsrun.just('lint', [
+  'jshint', [
+    'lib test index.js',
+    ['--reporter', 'node_modules/jshint-stylish/stylish.js'],
+    ['--exclude', 'node_modules']
+  ]
+]);
+
+// Use task dependencies like we did in gulp
+jsrun.just('test', ['lint'], [
+  'node test/index.js | tap-spec'
+]);
+
+var bundleFileName = 'bundle.min.js';
+jsrun.just('build', [
+  // Create as many layers of array as you want
+  ['browserify', [
+    'index.js',
+    '-d',
+    ['-t', 'babelify']
+  ]],
+  // You can use "|" and "&&" in JsRun
+  '|',
+  'uglifyjs', [
+    '-m', '-c',
+    // Use string variables
+    ['>', bundleFileName]
+  ]
+]);
+
+// Just like gulp.task
+// You can use callbacks, promises and of course, streams.
+jsrun.task('hello', function(cb) {
+  console.log('Hello');
+
+  setTimeout(function() {
+    console.log('World!');
+    cb();
+  }, 500);
+});
+
+jsrun.task('default', ['lint', 'test', 'build']);
+```
+
+## Installation
+
+`npm install jsrun -g`
+
+## Why?
+
+### No more plugins
+
+With JsRun, you won't need another plugin like `grunt-contrib-something` or
+`gulp-this-and-that`. Your tools always stay updated instead of relying on
+plugins. And most importantly, JsRun is **always** compatible to your tools,
+as long as they are command-line scripts.
+
+### Comments and variables
+
+Sometimes, there might be something you want to comment in your build script,
+and it is impossible in the `package.json`. And we want variables for filenames
+in different scripts, again, impossible for `package.json`.
 
 ## Documentation
 
-For a Getting started guide, API docs, recipes, making a plugin, etc. see the [documentation page](/docs/README.md)!
+[Documentation page](/docs/README.md)
 
-## Sample `gulpfile.js`
+## Gulp
 
-This file is just a quick sample to give you a taste of what gulp does.
+JsRun is a fork of [gulp]. We simply took the file-system-related
+stuff(vinyl-fs) away and put the [npm-run] task runner inside.
 
-```js
-var gulp = require('gulp');
-var coffee = require('gulp-coffee');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var imagemin = require('gulp-imagemin');
-var sourcemaps = require('gulp-sourcemaps');
-var del = require('del');
+In addition, thanks to the modular source code of gulp, JsRun is made simple
+and lean. The implementation of JsRun is only about 0.5kloc.
 
-var paths = {
-  scripts: ['client/js/**/*.coffee', '!client/external/**/*.coffee'],
-  images: 'client/img/**/*'
-};
-
-// Not all tasks need to use streams
-// A gulpfile is just another node program and you can use all packages available on npm
-gulp.task('clean', function(cb) {
-  // You can use multiple globbing patterns as you would with `gulp.src`
-  del(['build'], cb);
-});
-
-gulp.task('scripts', ['clean'], function() {
-  // Minify and copy all JavaScript (except vendor scripts)
-  // with sourcemaps all the way down
-  return gulp.src(paths.scripts)
-    .pipe(sourcemaps.init())
-      .pipe(coffee())
-      .pipe(uglify())
-      .pipe(concat('all.min.js'))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('build/js'));
-});
-
-// Copy all static images
-gulp.task('images', ['clean'], function() {
-  return gulp.src(paths.images)
-    // Pass in options to the task
-    .pipe(imagemin({optimizationLevel: 5}))
-    .pipe(gulp.dest('build/img'));
-});
-
-// Rerun the task when a file changes
-gulp.task('watch', function() {
-  gulp.watch(paths.scripts, ['scripts']);
-  gulp.watch(paths.images, ['images']);
-});
-
-// The default task (called when you run `gulp` from cli)
-gulp.task('default', ['watch', 'scripts', 'images']);
-```
-
-## Incremental Builds
-
-We recommend these plugins:
-
-- [gulp-changed](https://github.com/sindresorhus/gulp-changed) - only pass through changed files
-- [gulp-cached](https://github.com/wearefractal/gulp-cached) - in-memory file cache, not for operation on sets of files
-- [gulp-remember](https://github.com/ahaurw01/gulp-remember) - pairs nicely with gulp-cached
-- [gulp-newer](https://github.com/tschaub/gulp-newer) - pass through newer source files only, supports many:1 source:dest
-
-## Want to contribute?
-
-Anyone can help make this project better - check out the [Contributing guide](/CONTRIBUTING.md)!
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/wearefractal/gulp/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
-[gittip-url]: https://www.gittip.com/WeAreFractal/
-[gittip-image]: http://img.shields.io/gittip/WeAreFractal.svg
-
-[downloads-image]: http://img.shields.io/npm/dm/gulp.svg
-[npm-url]: https://npmjs.org/package/gulp
-[npm-image]: http://img.shields.io/npm/v/gulp.svg
-
-[travis-url]: https://travis-ci.org/gulpjs/gulp
-[travis-image]: http://img.shields.io/travis/gulpjs/gulp.svg
-
-[coveralls-url]: https://coveralls.io/r/gulpjs/gulp
-[coveralls-image]: http://img.shields.io/coveralls/gulpjs/gulp/master.svg
-
-[gitter-url]: https://gitter.im/gulpjs/gulp
-[gitter-image]: https://badges.gitter.im/gulpjs/gulp.png
+[gulp]: https://github.com/gulpjs/gulp
+[npm-run]: https://github.com/timoxley/npm-run
