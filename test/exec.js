@@ -40,7 +40,7 @@ describe('exec()', function() {
       {cwd: level[0]},
       function(err) {
         assert.ok(err);
-        assert.equal(err.code, 127);
+        assert.ok(err.code === 127 || err.code === 'ENOENT');
         done();
       }
     );
