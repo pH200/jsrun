@@ -89,6 +89,9 @@ describe('gulp tasks', function() {
     });
 
     it('should return Promise', function() {
+      if (!global.Promise) {
+        return;
+      }
       return gulp.justExec(['mocha --version']).then(function(data) {
         assert.ok(/[0-9]+\.[0-9]+\.[0-9]+/.test(data.stdout.trim()));
       });
