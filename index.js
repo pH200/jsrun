@@ -1,63 +1,84 @@
+/* globals Promise */
 'use strict';
-
 var util = require('util');
-var Orchestrator = require('orchestrator');
 var gutil = require('gulp-util');
-var deprecated = require('deprecated');
-var vfs = require('vinyl-fs');
+var Orchestrator = require('orchestrator');
+var buildCommand = require('./lib/buildCommand');
+var npmTaskRun = require('./lib/exec');
 
-function Gulp() {
+function Justrun() {
   Orchestrator.call(this);
 }
-util.inherits(Gulp, Orchestrator);
+util.inherits(Justrun, Orchestrator);
 
-Gulp.prototype.task = Gulp.prototype.add;
-Gulp.prototype.run = function() {
-  // `run()` is deprecated as of 3.5 and will be removed in 4.0
-  // Use task dependencies instead
+Justrun.prototype.task = Justrun.prototype.add;
 
-  // Impose our opinion of "default" tasks onto orchestrator
-  var tasks = arguments.length ? arguments : ['default'];
+Justrun.prototype.run = function run() {
+  if (arguments.length < 2) {
+    throw new Error('Invalid argument for run-script task');
+  }
+  var runArgs = arguments[arguments.length - 1];
+  if (!Array.isArray(runArgs)) {
+    throw new Error('Invalid argument for run-script task');
+  }
+  var options = arguments[arguments.length - 2];
+  var hasOptions = options && typeof options === 'object';
+  var cwd;
+  if (hasOptions) {
+    cwd = options.cwd;
+  }
+  cwd = cwd ? cwd : process.cwd();
 
-  this.start.apply(this, tasks);
-};
-
-Gulp.prototype.src = vfs.src;
-Gulp.prototype.dest = vfs.dest;
-Gulp.prototype.watch = function(glob, opt, fn) {
-  if (typeof opt === 'function' || Array.isArray(opt)) {
-    fn = opt;
-    opt = null;
+  var command = buildCommand.apply(buildCommand, runArgs);
+  function runScript(cb) {
+    gutil.log('run-script', command);
+    return npmTaskRun(command, {cwd: cwd}, cb);
   }
 
-  // Array of tasks given
-  if (Array.isArray(fn)) {
-    return vfs.watch(glob, opt, function() {
-      this.start.apply(this, fn);
-    }.bind(this));
-  }
+  var args = Array.prototype.slice.call(arguments);
+  var sliceLength = args.length - (hasOptions ? 2 : 1);
 
-  return vfs.watch(glob, opt, fn);
+  this.add.apply(this, args.slice(0, sliceLength).concat([runScript]));
 };
 
-// Let people use this class from our instance
-Gulp.prototype.Gulp = Gulp;
+Justrun.prototype.justExec = function justExec(args, options, callback) {
+  if (!Array.isArray(args)) {
+    throw new Error('Invalid arguments');
+  }
+  options = options || {};
+  options.cwd = options.cwd || process.cwd();
 
-// Deprecations
-deprecated.field('gulp.env has been deprecated. ' +
-  'Use your own CLI parser instead. ' +
-  'We recommend using yargs or minimist.',
-  console.warn,
-  Gulp.prototype,
-  'env',
-  gutil.env
-);
+  var cmd = buildCommand.apply(buildCommand, args);
 
-Gulp.prototype.run = deprecated.method('gulp.run() has been deprecated. ' +
-  'Use task dependencies or gulp.watch task triggering instead.',
-  console.warn,
-  Gulp.prototype.run
-);
+  if (typeof callback === 'function') {
+    return npmTaskRun(cmd, options, callback);
+  }
 
-var inst = new Gulp();
+  var Pr;
+  try {
+    Pr = Promise;
+  } catch (e) {
+    if (e instanceof ReferenceError) {
+      Pr = null;
+    }
+    throw e;
+  }
+
+  if (Pr) {
+    return new Pr(function promise(resolve, reject) {
+      return npmTaskRun(cmd, options, function cb(err, data) {
+        if (err) {
+          return reject(err);
+        }
+        return resolve(data);
+      });
+    });
+  }
+  return npmTaskRun(cmd, options, function noop() {
+  });
+};
+
+Justrun.prototype.Justrun = Justrun;
+
+var inst = new Justrun();
 module.exports = inst;

@@ -19,10 +19,10 @@ var taskTree = require('../lib/taskTree');
 process.env.INIT_CWD = process.cwd();
 
 var cli = new Liftoff({
-  name: 'gulp',
+  name: 'justrun',
   completions: completion,
   extensions: interpret.jsVariants,
-  v8flags: v8flags,
+  v8flags: v8flags
 });
 
 // Exit with 0 or 1
@@ -66,7 +66,7 @@ cli.on('respawn', function(flags, child) {
 
 cli.launch({
   cwd: argv.cwd,
-  configPath: argv.gulpfile,
+  configPath: argv.justrunfile,
   require: argv.require,
   completion: argv.completion,
 }, handleArguments);
@@ -81,28 +81,28 @@ function handleArguments(env) {
     process.exit(0);
   }
 
-  if (!env.modulePath) {
+  if (!argv.skipModuleCheck && !env.modulePath) {
     gutil.log(
-      chalk.red('Local gulp not found in'),
+      chalk.red('Local justrun not found in'),
       chalk.magenta(tildify(env.cwd))
     );
-    gutil.log(chalk.red('Try running: npm install gulp'));
+    gutil.log(chalk.red('Try running: npm install justrun'));
     process.exit(1);
   }
 
   if (!env.configPath) {
-    gutil.log(chalk.red('No gulpfile found'));
+    gutil.log(chalk.red('No justrunfile found'));
     process.exit(1);
   }
 
   // Check for semver difference between cli and local installation
   if (semver.gt(cliPackage.version, env.modulePackage.version)) {
-    gutil.log(chalk.red('Warning: gulp version mismatch:'));
-    gutil.log(chalk.red('Global gulp is', cliPackage.version));
-    gutil.log(chalk.red('Local gulp is', env.modulePackage.version));
+    gutil.log(chalk.red('Warning: justrun version mismatch:'));
+    gutil.log(chalk.red('Global justrun is', cliPackage.version));
+    gutil.log(chalk.red('Local justrun is', env.modulePackage.version));
   }
 
-  // Chdir before requiring gulpfile to make sure
+  // Chdir before requiring justrunfile to make sure
   // we let them chdir as needed
   if (process.cwd() !== env.cwd) {
     process.chdir(env.cwd);
@@ -112,9 +112,9 @@ function handleArguments(env) {
     );
   }
 
-  // This is what actually loads up the gulpfile
+  // This is what actually loads up the justrunfile
   require(env.configPath);
-  gutil.log('Using gulpfile', chalk.magenta(tildify(env.configPath)));
+  gutil.log('Using justrunfile', chalk.magenta(tildify(env.configPath)));
 
   var gulpInst = require(env.modulePath);
   logEvents(gulpInst);
@@ -204,9 +204,11 @@ function logEvents(gulpInst) {
 
   gulpInst.on('task_not_found', function(err) {
     gutil.log(
-      chalk.red('Task \'' + err.task + '\' is not in your gulpfile')
+      chalk.red('Task \'' + err.task + '\' is not in your justrunfile')
     );
-    gutil.log('Please check the documentation for proper gulpfile formatting');
+    gutil.log(
+      'Please check the documentation for proper justrunfile formatting'
+    );
     process.exit(1);
   });
 }
