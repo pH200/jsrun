@@ -16,7 +16,7 @@ Does this seems familiar to you?
     // My very long lines run-scripts:
     "lint": "jshint lib test index.js --reporter node_modules/jshint-stylish/stylish.js --exclude node_modules",
     "test": "npm run lint && node test/index.js | tap-spec",
-    "build": "browserify index.js -d -t babelify | uglifyjs -m -c > bundle.min.js",
+    "build": "browserify index.js -d -t babelify | exorcist bundle.js.map | uglifyjs -m -c warnings=false --in-source-map bundle.js.map --source-map-include-sources --source-map-url bundle.js.map --source-map dist/bundle.min.js.map > dist/bundle.min.js",
     "cover": "istanbul cover --report html --print detail ./test/index.js",
     "coveralls": "npm run cover && istanbul report lcov && cat coverage/lcov.info | coveralls && rm -rf ./coverage"
   }
@@ -51,7 +51,7 @@ jsrun.just('test', ['lint'], [
   'node test/index.js | tap-spec'
 ]);
 
-var bundleFileName = 'bundle.min.js';
+var bundleFileName = 'dist/bundle.min.js';
 jsrun.just('build', [
   // Create as many layers of array as you want
   ['browserify', [
@@ -60,8 +60,14 @@ jsrun.just('build', [
   ]],
   // You can use "|" and "&&" in JsRun
   '|',
+  'exorcist bundle.js.map',
+  '|',
   'uglifyjs', [
-    '-m', '-c',
+    '-m', '-c warnings=false',
+    ['--in-source-map', 'bundle.js.map'],
+    '--source-map-include-sources',
+    ['--source-map-url', 'bundle.js.map'],
+    ['--source-map', 'dist/bundle.min.js.map'],
     // Use string variables
     ['>', bundleFileName]
   ]

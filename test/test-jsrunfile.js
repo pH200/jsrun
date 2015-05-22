@@ -14,25 +14,30 @@ jsrun.just('test', ['lint'], {skipRun: true}, [
   'node test/index.js | tap-spec'
 ]);
 
-var bundleFileName = 'bundle.min.js';
+var bundleFileName = 'dist/bundle.min.js';
 jsrun.just('build', {skipRun: true}, [
   // Create as many layers of array as you want
   ['browserify', [
     'index.js',
-    '-d',
-    ['-t', 'babelify']
+    ['-d', '-t', 'babelify']
   ]],
   // You can use "|" and "&&" in JsRun
   '|',
+  'exorcist bundle.js.map',
+  '|',
   'uglifyjs', [
-    '-m', '-c',
+    '-m', '-c warnings=false',
+    ['--in-source-map', 'bundle.js.map'],
+    '--source-map-include-sources',
+    ['--source-map-url', 'bundle.js.map'],
+    ['--source-map', 'dist/bundle.min.js.map'],
     // Use string variables
     ['>', bundleFileName]
   ]
 ]);
 
-// Just like gulp.task
-// You can use callbacks, promises and of course, streams.
+// jsrun.task is gulp.task
+// You can use callbacks, promises and of course, streams
 jsrun.task('hello', function(cb) {
   console.log('Hello');
 
