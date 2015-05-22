@@ -1,10 +1,10 @@
-/* globals Promise */
 'use strict';
 var util = require('util');
 var gutil = require('gulp-util');
 var Orchestrator = require('orchestrator');
 var buildCommand = require('./lib/buildCommand');
 var npmTaskRun = require('./lib/exec');
+var justExec = require('./lib/justExec');
 
 function JsRun() {
   Orchestrator.call(this);
@@ -32,7 +32,17 @@ JsRun.prototype.just = function just() {
     if (skipRun) {
       return cb();
     }
-    return npmTaskRun(command, {cwd: cwd}, cb);
+    return npmTaskRun(command, {cwd: cwd}, function callback(err) {
+      if (err) {
+        var cmdErr = new gutil.PluginError(
+          '[run-script]',
+          'Command failed: ' + command
+        );
+        cmdErr.code = err.code;
+        return cb(cmdErr);
+      }
+      return cb();
+    });
   }
 
   var args = Array.prototype.slice.call(arguments);
@@ -41,42 +51,7 @@ JsRun.prototype.just = function just() {
   this.add.apply(this, args.slice(0, sliceLength).concat([runScript]));
 };
 
-JsRun.prototype.justExec = function justExec(args, options, callback) {
-  if (!Array.isArray(args)) {
-    throw new Error('Invalid arguments');
-  }
-  options = options || {};
-  options.cwd = options.cwd || process.cwd();
-
-  var cmd = buildCommand.apply(buildCommand, args);
-
-  if (typeof callback === 'function') {
-    return npmTaskRun(cmd, options, callback);
-  }
-
-  var Pr;
-  try {
-    Pr = Promise;
-  } catch (e) {
-    if (e instanceof ReferenceError) {
-      Pr = null;
-    }
-    throw e;
-  }
-
-  if (Pr) {
-    return new Pr(function promise(resolve, reject) {
-      return npmTaskRun(cmd, options, function cb(err, data) {
-        if (err) {
-          return reject(err);
-        }
-        return resolve(data);
-      });
-    });
-  }
-  return npmTaskRun(cmd, options, function noop() {
-  });
-};
+JsRun.prototype.justExec = justExec;
 
 JsRun.prototype.JsRun = JsRun;
 
