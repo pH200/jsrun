@@ -43,7 +43,7 @@
     "jshint": "^2.5.0",
     "jshint-stylish": "^1.0.0",
     "mocha": "^2.0.1",
-    "mocha-lcov-reporter": "^0.0.1",
+    "mocha-lcov-reporter": "0.0.2",
     "q": "^1.0.0",
     "should": "^5.0.1"
   },
@@ -51,7 +51,8 @@
     "lint": "node bin/jsrun.js lint",
     "test": "node bin/jsrun.js",
     "test-file": "node bin/jsrun.js --jsrunfile test/test-jsrunfile.js",
-    "coveralls": "node bin/jsrun.js cover"
+    "cover": "node bin/jsrun.js cover",
+    "travis-test": "node bin/jsrun.js travis-test"
   },
   "engines": {
     "node": ">= 0.9"

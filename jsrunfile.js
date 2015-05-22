@@ -13,17 +13,21 @@ jsrun.just('lint', [
 
 jsrun.just('mocha', ['mocha --reporter spec']);
 
-jsrun.just('cover', [
-  ['istanbul', [
+var cover = [
+  'istanbul', [
     ['cover', '_mocha'],
     ['--report', 'lcovonly -- -R spec']
-  ]],
-  // '&&',
-  // 'cat ./coverage/lcov.info',
-  // '|',
-  // 'coveralls',
+  ]
+];
+jsrun.just('cover', cover);
+
+// Can't write ['lint', 'cover'] because orchestrator runs them in parallel,
+// which would mess up the console output.
+jsrun.just('travis-test', ['lint'], cover.concat([
   '&&',
-  'rm -rf ./coverage'
-]);
+  'cat ./coverage/lcov.info',
+  '|',
+  'coveralls'
+]));
 
 jsrun.just('default', ['lint'], ['mocha --reporter spec']);

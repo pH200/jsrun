@@ -110,6 +110,10 @@ if you want to keep these shell commands portable, we recommend using
 You can use watch mode from your tools if they are available. On the other
 hand, if it's not available, you can try [catw].
 
+### JsRun eats its own dog food
+
+JsRun's [jsrunfile.js](/jsrunfile.js)
+
 ## Documentation
 
 [Documentation page](/docs/README.md)
