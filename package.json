@@ -2,8 +2,7 @@
   "name": "jsrun",
   "description": "The npm run-script build system",
   "version": "1.0.0",
-  "homepage": "http://gulpjs.com",
-  "repository": "gulpjs/gulp",
+  "repository": "pH200/jsrun",
   "author": "pH200 <ph.minamo@cytisan.com>",
   "tags": [
     "build",
