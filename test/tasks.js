@@ -22,9 +22,9 @@ describe('gulp tasks', function() {
     });
   });
 
-  describe('run()', function() {
+  describe('just()', function() {
     it('should define a run-script task', function(done) {
-      gulp.run('test', [
+      gulp.just('test', [
         'foo', 'bar'
       ]);
       assert.ok(gulp.tasks.test);
@@ -34,7 +34,7 @@ describe('gulp tasks', function() {
     });
 
     it('should be able to run the defined task', function(done) {
-      gulp.run('test', {cwd: level[0]}, [
+      gulp.just('test', {cwd: level[0]}, [
         ['level1', [
           '-d',
           ['-t', 'babelify']
@@ -48,7 +48,7 @@ describe('gulp tasks', function() {
     });
 
     it('should be able to run mocha', function(done) {
-      gulp.run('test', [
+      gulp.just('test', [
         ['mocha', [
           '--version'
         ]]

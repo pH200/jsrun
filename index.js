@@ -13,7 +13,7 @@ util.inherits(JsRun, Orchestrator);
 
 JsRun.prototype.task = JsRun.prototype.add;
 
-JsRun.prototype.run = function run() {
+JsRun.prototype.just = function just() {
   if (arguments.length < 2) {
     throw new Error('Invalid argument for run-script task');
   }

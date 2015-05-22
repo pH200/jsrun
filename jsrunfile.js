@@ -1,7 +1,7 @@
 'use strict';
 var jsrun = require('./');
 
-jsrun.run('lint', [
+jsrun.just('lint', [
   ['jshint', [
     'lib bin test index.js jsrunfile.js',
     ['--reporter', 'node_modules/jshint-stylish/stylish.js'],
@@ -11,9 +11,9 @@ jsrun.run('lint', [
   ['jscs', 'lib bin test index.js']
 ]);
 
-jsrun.run('mocha', ['mocha --reporter spec']);
+jsrun.just('mocha', ['mocha --reporter spec']);
 
-jsrun.run('cover', [
+jsrun.just('cover', [
   ['istanbul', [
     ['cover', '_mocha'],
     ['--report', 'lcovonly -- -R spec']
