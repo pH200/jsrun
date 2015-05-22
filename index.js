@@ -15,23 +15,23 @@ JsRun.prototype.task = JsRun.prototype.add;
 
 JsRun.prototype.just = function just() {
   if (arguments.length < 2) {
-    throw new Error('Invalid argument for run-script task');
+    throw new Error('Invalid argument for just task');
   }
   var runArgs = arguments[arguments.length - 1];
   if (!Array.isArray(runArgs)) {
-    throw new Error('Invalid argument for run-script task');
+    throw new Error('Invalid argument for just task');
   }
   var options = arguments[arguments.length - 2];
   var hasOptions = options && typeof options === 'object';
-  var cwd;
-  if (hasOptions) {
-    cwd = options.cwd;
-  }
-  cwd = cwd ? cwd : process.cwd();
+  var skipRun = hasOptions ? !!options.skipRun : false;
+  var cwd = (hasOptions ? options.cwd : null) || process.cwd();
 
   var command = buildCommand.apply(buildCommand, runArgs);
   function runScript(cb) {
-    gutil.log('run-script', command);
+    gutil.log('[run-script]', command);
+    if (skipRun) {
+      return cb();
+    }
     return npmTaskRun(command, {cwd: cwd}, cb);
   }
 

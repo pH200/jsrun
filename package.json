@@ -1,6 +1,6 @@
 {
   "name": "jsrun",
-  "description": "The npm run-script build system",
+  "description": "The npm run-script build system, compatible with gulp",
   "version": "1.0.0",
   "repository": "pH200/jsrun",
   "author": "pH200 <ph.minamo@cytisan.com>",
@@ -53,9 +53,10 @@
     "should": "^5.0.1"
   },
   "scripts": {
-    "lint": "node bin/jsrun.js lint --skipModuleCheck",
-    "test": "node bin/jsrun.js --skipModuleCheck",
-    "coveralls": "node bin/jsrun.js cover --skipModuleCheck"
+    "lint": "node bin/jsrun.js lint",
+    "test": "node bin/jsrun.js",
+    "test-file": "node bin/jsrun.js --jsrunfile test/test-jsrunfile.js",
+    "coveralls": "node bin/jsrun.js cover"
   },
   "engines": {
     "node": ">= 0.9"

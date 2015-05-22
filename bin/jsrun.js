@@ -81,7 +81,7 @@ function handleArguments(env) {
     process.exit(0);
   }
 
-  if (!argv.skipModuleCheck && !env.modulePath) {
+  if (!env.modulePath) {
     gutil.log(
       chalk.red('Local jsrun not found in'),
       chalk.magenta(tildify(env.cwd))
