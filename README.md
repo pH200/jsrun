@@ -1,5 +1,7 @@
 # JsRun
 
+[![Build Status](https://travis-ci.org/pH200/jsrun.svg?branch=master)](https://travis-ci.org/pH200/jsrun)
+
 The npm run-script build system, compatible with [gulp].
 
 ## The struggle
@@ -95,6 +97,19 @@ Sometimes, there might be something you want to comment in your build script,
 and it is impossible in the `package.json`. And we want variables for filenames
 in different scripts, again, impossible for `package.json`.
 
+## FAQ
+
+### Copying, moving and removing files
+
+You can always write shell scripts inside JsRun for these tasks. However,
+if you want to keep these shell commands portable, we recommend using
+[shelljs].
+
+### Watching file changes
+
+You can use watch mode from your tools if they are available. On the other
+hand, if it's not available, you can try [catw].
+
 ## Documentation
 
 [Documentation page](/docs/README.md)
@@ -109,3 +124,5 @@ and lean. The implementation of JsRun is only about 0.5kloc.
 
 [gulp]: https://github.com/gulpjs/gulp
 [npm-run]: https://github.com/timoxley/npm-run
+[shelljs]: https://github.com/arturadib/shelljs
+[catw]: https://github.com/substack/catw
