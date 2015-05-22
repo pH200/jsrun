@@ -26,4 +26,4 @@ jsrun.just('cover', [
   'rm -rf ./coverage'
 ]);
 
-jsrun.task('default', ['lint', 'mocha']);
+jsrun.just('default', ['lint'], ['mocha --reporter spec']);

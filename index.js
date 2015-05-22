@@ -14,28 +14,45 @@ util.inherits(JsRun, Orchestrator);
 JsRun.prototype.task = JsRun.prototype.add;
 
 JsRun.prototype.just = function just() {
+  var NAME = '[run-script]';
+
   if (arguments.length < 2) {
-    throw new Error('Invalid argument for just task');
+    var invalidArgsErr = new gutil.PluginError(
+      NAME,
+      'Invalid argument for just task'
+    );
+    invalidArgsErr.args = arguments;
+    throw invalidArgsErr;
   }
   var runArgs = arguments[arguments.length - 1];
   if (!Array.isArray(runArgs)) {
-    throw new Error('Invalid argument for just task');
+    var invalidCommandTreeErr = new gutil.PluginError(
+      NAME,
+      'Invalid argument for just task'
+    );
+    invalidCommandTreeErr.args = arguments;
+    invalidCommandTreeErr.commandTree = runArgs;
+    throw invalidCommandTreeErr;
   }
+
   var options = arguments[arguments.length - 2];
-  var hasOptions = options && typeof options === 'object';
+  var hasOptions = options &&
+    typeof options === 'object' &&
+    !Array.isArray(options);
   var skipRun = hasOptions ? !!options.skipRun : false;
   var cwd = (hasOptions ? options.cwd : null) || process.cwd();
 
   var command = buildCommand.apply(buildCommand, runArgs);
+
   function runScript(cb) {
-    gutil.log('[run-script]', command);
+    gutil.log(NAME, command);
     if (skipRun) {
       return cb();
     }
     return npmTaskRun(command, {cwd: cwd}, function callback(err) {
       if (err) {
         var cmdErr = new gutil.PluginError(
-          '[run-script]',
+          NAME,
           'Command failed: ' + command
         );
         cmdErr.code = err.code;
@@ -47,8 +64,8 @@ JsRun.prototype.just = function just() {
 
   var args = Array.prototype.slice.call(arguments);
   var sliceLength = args.length - (hasOptions ? 2 : 1);
-
-  this.add.apply(this, args.slice(0, sliceLength).concat([runScript]));
+  var addTaskArgs = args.slice(0, sliceLength).concat([runScript]);
+  this.add.apply(this, addTaskArgs);
 };
 
 JsRun.prototype.justExec = justExec;
