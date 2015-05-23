@@ -13,7 +13,7 @@ Does this seems familiar to you?
   "name": "my-awesome-package",
   ...
   "scripts": {
-    // My very long lines run-scripts:
+    // My very long and lengthy lines of scripts:
     "lint": "jshint lib test index.js --reporter node_modules/jshint-stylish/stylish.js --exclude node_modules",
     "test": "npm run lint && node test/index.js | tap-spec",
     "build": "browserify index.js -d -t babelify | exorcist bundle.js.map | uglifyjs -m -c warnings=false --in-source-map bundle.js.map --source-map-include-sources --source-map-url bundle.js.map --source-map dist/bundle.min.js.map > dist/bundle.min.js",
